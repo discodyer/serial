@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(serial)
 
+option(SERIAL_INSTALL "Install serial library" ON)
+
 if(APPLE)
     find_library(IOKIT_LIBRARY IOKit)
     find_library(FOUNDATION_LIBRARY Foundation)
@@ -44,21 +46,23 @@ target_link_libraries(serial_example ${PROJECT_NAME})
 ## Include headers
 include_directories(include)
 
-set(INSTALL_LIB_DIR lib)
-set(INSTALL_INCLUDE_DIR include)
-set(INSTALL_CMAKE_DIR share/serial/cmake)
+if(SERIAL_INSTALL)
+    set(INSTALL_LIB_DIR lib)
+    set(INSTALL_INCLUDE_DIR include)
+    set(INSTALL_CMAKE_DIR share/serial/cmake)
 
-## Install executable
-install(TARGETS ${PROJECT_NAME}
-    DESTINATION ${INSTALL_LIB_DIR}
-    EXPORT ${PROJECT_NAME}-targets
-)
+    ## Install executable
+    install(TARGETS ${PROJECT_NAME}
+        DESTINATION ${INSTALL_LIB_DIR}
+        EXPORT ${PROJECT_NAME}-targets
+    )
 
-## Install headers
-install(FILES include/serial/serial.h include/serial/v8stdint.h
-    DESTINATION ${INSTALL_INCLUDE_DIR}/serial)
+    ## Install headers
+    install(FILES include/serial/serial.h include/serial/v8stdint.h
+        DESTINATION ${INSTALL_INCLUDE_DIR}/serial)
 
-## Install CMake files
-install(EXPORT ${PROJECT_NAME}-targets DESTINATION ${INSTALL_CMAKE_DIR})
-install(FILES ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cmake
-        DESTINATION ${INSTALL_CMAKE_DIR})
+    ## Install CMake files
+    install(EXPORT ${PROJECT_NAME}-targets DESTINATION ${INSTALL_CMAKE_DIR})
+    install(FILES ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake ${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cmake
+            DESTINATION ${INSTALL_CMAKE_DIR})
+endif()
